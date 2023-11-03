@@ -14,7 +14,7 @@ const servidor = express()
 servidor.use(morgan("dev"))
 servidor.use(cors())
 servidor.use(helmet())
-servidor.use(express.static("Clase04/src/public"))
+servidor.use(express.static("public"))
 
     // Para que ande Body
 servidor.use(express.json())
