@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken"
 import {getUserById } from "../models/user.model.js"
-export {guardMiddleware}
+export {authenticationMiddleware}
 
-const guardMiddleware = (req , res, next) =>{
+const authenticationMiddleware = (req , res, next) =>{
 
     console.log("Paso por Guard Middleware");
   try {
