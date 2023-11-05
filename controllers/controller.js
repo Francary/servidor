@@ -20,6 +20,7 @@ import{
 const ctrlGetAllPost = ( req, res, next) => {
     const posts2 = getAllPost()
     try {
+        console.log( "uruario" , req.user)
             if(posts.length < 1){
             return res.sendStatus(204)
         }

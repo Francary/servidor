@@ -4,6 +4,8 @@ import helmet from "helmet"
 import cors from "cors"
 import { postRouter } from "./routes/post.routes.js"
 import { env } from "./settings/envs.js"
+import { guardMiddleware } from "./middleware/guard.js"
+import { userRouter } from "./routes/user.routes.js"
 
 
 const servidor = express()
@@ -25,7 +27,8 @@ servidor.use(express.urlencoded({extended: false}))
     // Validacion personalizada 
 // servidor.use(validarPost)
 
-servidor.use("/posts",postRouter)
+servidor.use("/posts", guardMiddleware, postRouter)
+servidor.use("/users", userRouter)
 
 servidor.get('/', (req , res) => {
     res.sendFile('index.html')                   
