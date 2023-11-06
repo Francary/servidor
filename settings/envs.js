@@ -3,12 +3,12 @@ export {env}
 
 config();
 
-const puerto = 3000;
+const puerto = 4000;
 
 const env = {
 
-    PORT: process.env.PORT || puerto
-
+    PORT: process.env.PORT || puerto,
+    MAIL_PASSWORD: process.env.MAIL_PASSWORD,
 };
 
 
