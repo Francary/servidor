@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { ctrlGetAllPost, createPost, editPostParcial,ctrlUpdatePostId, ctrldeletePost, ctrlGetById, } from "../controllers/controller.js"
+import { ctrlGetAllPost, createPost, editPostParcial,ctrlUpdatePostId, ctrldeletePost, ctrlGetById, } from "../controllers/post.controller.js"
 import { errorController } from "../middleware/error.js"
 import { validarCreatPosts } from "../validations/validations.posts.js";
 import { verificarValidaciones } from "../middleware/verificar.validaciones.js";

@@ -4,7 +4,6 @@ import  morgan from "morgan";
 import helmet from "helmet";
 import cors from "cors";
 import fileUpload from "express-fileupload";
-import { createTransport } from "nodemailer";
 
 //
 import { postRouter } from "./routes/post.routes.js"
@@ -17,9 +16,9 @@ import { ctrlUpload } from "./controllers/upload.controller.js"
 import path from "node:path"
 import * as url from "url"
 import fs from "node:fs/promises"
+import { ctrlEmail } from "./controllers/email.controller.js";
 
 // const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
-
 
 const servidor = express()
 
@@ -48,41 +47,7 @@ servidor.use("/posts", authenticationMiddleware, authorizationMiddleware, postRo
 servidor.use("/users", userRouter)
 servidor.post("/upload", ctrlUpload)
 
-
-const transporter = createTransport({
-    service: "gmail",
-    host: "smtp.gmail.com",
-    secure: true,
-    auth: {
-      user: "francary.programmer@gmail.com",
-      pass: env.MAIL_PASSWORD,
-    },
-    tls: {
-        rejectUnauthorized: false // Esta línea deshabilita la validación del certificado que me da el error. Otra opcion es desactivar el antivirus AVAST
-      }
-  });
-
-servidor.post("/send-email", async (req,res) => {
-
-    try {
-        const { destinatario , asunto , mensaje} = req.body;
-        const response = await transporter.sendMail({
-            from: "francary.programmer@gmail.com",
-            to: destinatario,
-            subject: asunto,
-            text: mensaje,
-        });
-        console.log(response)
-        res.send("E-mail enviado")
-        
-    } catch (error) {
-        console.log(error);
-        res.status(500).send(error);
-        
-    }
-
-
-})
+servidor.post("/send-email", ctrlEmail)
 
 servidor.get('/', (req , res) => {
     res.sendFile('index.html')                      
