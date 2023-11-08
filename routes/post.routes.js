@@ -1,5 +1,12 @@
 import { Router } from "express";
-import { ctrlGetAllPost, createPost, editPostParcial,ctrlUpdatePostId, ctrldeletePost, ctrlGetById, } from "../controllers/post.controller.js"
+import { 
+    createPost,
+    ctrlGetAllPost,
+    // editPostParcial,
+    ctrlUpdatePostId,
+    ctrldeletePost,
+    ctrlGetById,
+} from "../controllers/post.controller.js"
 import { errorController } from "../middleware/error.js"
 import { validarCreatPosts } from "../validations/validations.posts.js";
 import { verificarValidaciones } from "../middleware/verificar.validaciones.js";
@@ -11,11 +18,11 @@ const postRouter = Router()
 
 postRouter.get('/',ctrlGetAllPost, errorController)
 
-postRouter.get('/:postId',validarPostsById,verificarValidaciones, ctrlGetById)
+postRouter.get('/:postId', validarPostsById, verificarValidaciones, ctrlGetById)
 
 postRouter.post('/', validarCreatPosts, verificarValidaciones, createPost)
 
-postRouter.patch('/',editPostParcial)
+// postRouter.patch('/',editPostParcial)
 
 postRouter.patch('/:postId',validarEditPosts,verificarValidaciones,ctrlUpdatePostId)
 

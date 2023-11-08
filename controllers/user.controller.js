@@ -1,14 +1,14 @@
 import { createNewUser, getAllUsers, getUserByEmail,getUserById ,listOfUsers} from "../models/user.model.js"
 import  jwt  from "jsonwebtoken";
 import bcrypt from "bcrypt"
+import { env } from "../settings/envs.js";
 export {ctrlGetAllUsers,ctrlLogin,ctrlRegister}
 
 const ctrlRegister = async (req, res) => {
   
     const newUser = await createNewUser(req.body );
     if(!newUser) return res.sendStatus(400);
-
-    const token = jwt.sign({id: newUser.id},"miPalabraSecreta")
+    const token = jwt.sign({id: newUser.id},env.JWT_SECRET)
     res.status(201).json({token});
     
 }
@@ -26,7 +26,7 @@ const ctrlLogin = async (req, res)=>{
 
     // if(user.password !== password) return res.sendStatus(401) esto era antes de usa la libreria bcrypt
     
-    const token = jwt.sign({id: user.id},"miPalabraSecreta")
+    const token = jwt.sign({id: user.id},env.JWT_SECRET)
     
     res.status(201).json({token});
 }

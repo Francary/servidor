@@ -3,7 +3,7 @@ export {validarEditPosts}
 
 const validarEditPosts = [
 param("postId").
-isNumeric().withMessage("La id debe ser un numero").toInt(),    
+isString().withMessage("La id debe ser del tipo UUII"),    
 body("title").
     optional().
     isString().withMessage("El titulo debe ser un string").

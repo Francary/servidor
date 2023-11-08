@@ -4,6 +4,8 @@ import  morgan from "morgan";
 import helmet from "helmet";
 import cors from "cors";
 import fileUpload from "express-fileupload";
+import {startConnection} from "./settings/database.js"
+
 
 //
 import { postRouter } from "./routes/post.routes.js"
@@ -43,7 +45,10 @@ servidor.use(express.urlencoded({extended: false}))
     // Validacion personalizada 
 // servidor.use(validarPost)
 
-servidor.use("/posts", authenticationMiddleware, authorizationMiddleware, postRouter)
+servidor.use("/posts",
+//  authenticationMiddleware,
+//   authorizationMiddleware,
+   postRouter)
 servidor.use("/users", userRouter)
 servidor.post("/upload", ctrlUpload)
 
@@ -53,6 +58,7 @@ servidor.get('/', (req , res) => {
     res.sendFile('index.html')                      
 })
 
-servidor.listen(env.PORT, () => {
+servidor.listen(env.PORT, async() => {
+    await startConnection()
     console.log(`Servidor Clase 04 activo por puerto ${env.PORT}`);
 })
