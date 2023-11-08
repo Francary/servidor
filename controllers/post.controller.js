@@ -59,7 +59,6 @@ const ctrlUpdatePostId = async (req,res)=>{
         console.log(error)
         res.sendStatus(500)
     }
-
 }
 // Controlador para ELIMINAR un Posts
 const ctrldeletePost = async (req,res)=>{
