@@ -1,37 +1,36 @@
 import{ v4 as uuid } from "uuid";
-import bcrypt from "bcrypt";
+import { sequelize } from "../settings/database.js";
+import { DataTypes } from "sequelize";
+export { userModel,}
 
-export {getAllUsers, createNewUser , getUserById, getUserByEmail,listOfUsers}
-
-let listOfUsers = []
-
-const getAllUsers = () => {
-    return [...listOfUsers]
-};
-
-const createNewUser = async ({name,email,password}) => {
-    if(!name || !email || !password) return null;
-
-    const hashedPassword = await bcrypt.hash(password,10);
-
-    const newUser = {
-        id: uuid(),
-        name,
-        email,
-        password: hashedPassword,
-        isAdmin: name === "Francary"
-    };
-    listOfUsers.push(newUser);
-    
-    return (newUser)
-}
-
-const getUserById = (id) => {
-    const user = listOfUsers.find((user) => user.id === id);
-    return user;
-}
-
-const getUserByEmail = (email) => {
-    const user = listOfUsers.find((user) => user.email === email);
-    return user;
-}
+// MODELO CON SEQUELIZE
+const userModel = sequelize.define(
+    "User",
+    {
+        id:{
+            type: DataTypes.UUID,
+            defaultValue: uuid,
+            primaryKey: true, 
+        },
+        name:{
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        email:{
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true,
+        },
+        password:{
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        isAdmin:{
+            type:DataTypes.BOOLEAN,
+            allowNull: false,
+        }
+    },
+    {
+        timestamps: true,
+    }
+)

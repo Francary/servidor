@@ -1,44 +1,75 @@
-import { createNewUser, getAllUsers, getUserByEmail,getUserById ,listOfUsers} from "../models/user.model.js"
+import { userModel} from "../models/user.model.js"
 import  jwt  from "jsonwebtoken";
 import bcrypt from "bcrypt"
 import { env } from "../settings/envs.js";
-export {ctrlGetAllUsers,ctrlLogin,ctrlRegister}
+export {ctrlGetAllUsers,ctrlLogin,ctrlRegister,ctrlDeleteUsers}
 
 const ctrlRegister = async (req, res) => {
-  
-    const newUser = await createNewUser(req.body );
-    if(!newUser) return res.sendStatus(400);
-    const token = jwt.sign({id: newUser.id},env.JWT_SECRET)
-    res.status(201).json({token});
-    
+    try {
+        const { name, email, password, isAdmin } =req.body
+        const hashedPassword = await bcrypt.hash(password,10);
+        const newUser = await userModel.create({ name, email, password: hashedPassword,isAdmin} );
+        if(!newUser) return res.sendStatus(400);
+        const token = jwt.sign({id: newUser.id},env.JWT_SECRET)
+        res.status(201).json({token});
+    } catch (error) {
+        console.error(error)
+        res.sendStatus(500)
+    }  
 }
 
 const ctrlLogin = async (req, res)=>{
+    try {
+        const {email , password} = req.body
+        const user = await userModel.findOne({
+        where: { email: email } });
     
-    const {email , password} = req.body
-    const user = getUserByEmail(email);
-
-    if (!user) return res.sendStatus(404);
-
-    const isMatch = await bcrypt.compare( password , user.password)
-
-    if (!isMatch) return res.sendStatus(404);
-
-    // if(user.password !== password) return res.sendStatus(401) esto era antes de usa la libreria bcrypt
+        if (!user) return res.status(404).send("Usuario no encontrado");
     
-    const token = jwt.sign({id: user.id},env.JWT_SECRET)
+        const isMatch = await bcrypt.compare( password , user.password)
     
-    res.status(201).json({token});
+        if (!isMatch) return res.status(401).send("Contraseña incorrecta");
+      
+        const token = jwt.sign({id: user.id},env.JWT_SECRET)
+        
+        res.status(201).json({token});
+    } catch (error) {
+        console.error(error)
+        res.sendStatus(500)
+    }
 }
 
-const ctrlGetAllUsers = ( req, res, next) => {
-    const users = getAllUsers()
+const ctrlGetAllUsers = async ( req, res) => {
     try {
-            if(listOfUsers.length < 1){
+        const users = await userModel.findAll()  
+            if(users.length < 1){
             return res.sendStatus(204)
         }
             res.status(200).json(users)
     } catch (error) {
-        next("Tenemos Problemas")
+        console.error(error)
+        res.sendStatus(500)
+    }
+}
+
+const ctrlDeleteUsers = async (req,res)=>{
+    try {
+        const {email , password} = req.body
+        const user = await userModel.findOne({
+        where: { email: email } });
+    
+        if (!user) return res.status(404).send("Usuario no encontrado");
+    
+        const isMatch = await bcrypt.compare( password , user.password)
+    
+        if (!isMatch) return res.status(401).send("Contraseña incorrecta");
+      
+        const token = jwt.sign({id: user.id},env.JWT_SECRET)
+        await user.destroy()
+        res.status(201).json({token});
+        
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500)
     }
 }

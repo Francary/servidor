@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken"
-import {getUserById } from "../models/user.model.js"
+import {userModel } from "../models/user.model.js"
 export {authenticationMiddleware}
 
 const authenticationMiddleware = (req , res, next) =>{
@@ -11,7 +11,7 @@ const authenticationMiddleware = (req , res, next) =>{
     if(!authorization) res.sendStatus(401);
     const token  = authorization
     const { id } = jwt.verify( token , "miPalabraSecreta")
-    const user = getUserById(id)
+    const user = userModel(id)
     
     req.user = user;
     
