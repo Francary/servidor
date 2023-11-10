@@ -5,12 +5,14 @@ import { env } from "../settings/envs.js";
 export {ctrlGetAllUsers,ctrlLogin,ctrlRegister,ctrlGetUserById,ctrlDeleteUserById}
 
 const ctrlRegister = async (req, res) => {
+ 
     const newUser = await createNewUser(req.body );
-    if(!newUser) return res.sendStatus(400);
+    if(!newUser) return res.status(400).send("El mail ya esta registrado");
     const token = jwt.sign({id: newUser.id},env.JWT_SECRET)
-    res.status(201).json({token});  
-}
+    res.status(201).json({token, newUser});  
 
+
+  } 
 const ctrlLogin = async (req, res)=>{
     const {email , password} = req.body
     const user = await getUserByEmail({email});

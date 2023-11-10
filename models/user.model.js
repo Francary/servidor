@@ -8,7 +8,6 @@ const UserSchema = new Schema ({
     name: {
         type: String,
         require: true,
-        unique: false,
     },
     email: {
         type: String,
@@ -37,10 +36,10 @@ const getAllUsers = async () => {
 };
 
 const createNewUser = async ({name,email,password}) => {
-    if(!name || !email || !password) return null;
-
+    const emailRegister  = await userModel.findOne({ email });
+    
+    if (emailRegister) { return null;}
     const hashedPassword = await bcrypt.hash(password,10);
-
     const newUser = {
         name,
         email,
@@ -48,8 +47,7 @@ const createNewUser = async ({name,email,password}) => {
         isAdmin: name === "Francary"
     };
     const user = await userModel.create(newUser)
-    
-    return (newUser)
+    return (user)
 }
 
 const getUserById = async ({id}) => {
