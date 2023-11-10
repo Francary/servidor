@@ -1,44 +1,59 @@
-import { createNewUser, getAllUsers, getUserByEmail,getUserById ,listOfUsers} from "../models/user.model.js"
+import { createNewUser, deleteUser, getAllUsers, getUserByEmail, getUserById,} from "../models/user.model.js"
 import  jwt  from "jsonwebtoken";
 import bcrypt from "bcrypt"
-export {ctrlGetAllUsers,ctrlLogin,ctrlRegister}
+import { env } from "../settings/envs.js";
+export {ctrlGetAllUsers,ctrlLogin,ctrlRegister,ctrlGetUserById,ctrlDeleteUserById}
 
 const ctrlRegister = async (req, res) => {
-  
     const newUser = await createNewUser(req.body );
     if(!newUser) return res.sendStatus(400);
-
-    const token = jwt.sign({id: newUser.id},"miPalabraSecreta")
-    res.status(201).json({token});
-    
+    const token = jwt.sign({id: newUser.id},env.JWT_SECRET)
+    res.status(201).json({token});  
 }
 
 const ctrlLogin = async (req, res)=>{
-    
     const {email , password} = req.body
-    const user = getUserByEmail(email);
-
-    if (!user) return res.sendStatus(404);
-
+    const user = await getUserByEmail({email});
+    if (!user) return res.status(404).send("Usuario no encontrado");
     const isMatch = await bcrypt.compare( password , user.password)
-
-    if (!isMatch) return res.sendStatus(404);
-
-    // if(user.password !== password) return res.sendStatus(401) esto era antes de usa la libreria bcrypt
-    
-    const token = jwt.sign({id: user.id},"miPalabraSecreta")
-    
-    res.status(201).json({token});
+    if (!isMatch) return res.status(401).send("Contraseña Incorrecta");
+    const token = jwt.sign({id: user.id},env.JWT_SECRET)
+    res.status(201).json({user, token});
 }
 
-const ctrlGetAllUsers = ( req, res, next) => {
-    const users = getAllUsers()
+const ctrlGetAllUsers = async( req, res) => {
+    const users = await getAllUsers()
     try {
-            if(listOfUsers.length < 1){
-            return res.sendStatus(204)
-        }
             res.status(200).json(users)
     } catch (error) {
-        next("Tenemos Problemas")
+        console.error(error);
     }
 }
+
+const ctrlGetUserById = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const user = await getUserById({ id: userId });
+          if (!user) {
+          return res.sendStatus(404);
+        }
+          res.status(200).json(user);
+        
+    } catch (error) {
+        console.error(error);
+    }
+  }
+
+  const ctrlDeleteUserById = async (req, res) =>{
+    try {
+        const { userId } = req.params;
+        const user = await deleteUser({ id: userId });
+          if (!user) {
+          return res.status(404).send("Usuario no Encontrado");
+        }
+          res.status(200).send("Usuario Eliminado");
+        
+    } catch (error) {
+        console.error(error);
+    }
+  }

@@ -17,6 +17,7 @@ import path from "node:path"
 import * as url from "url"
 import fs from "node:fs/promises"
 import { ctrlEmail } from "./controllers/email.controller.js";
+import {startConnection} from "./settings/database.js"
 
 // const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
@@ -53,6 +54,7 @@ servidor.get('/', (req , res) => {
     res.sendFile('index.html')                      
 })
 
-servidor.listen(env.PORT, () => {
+servidor.listen(env.PORT, async () => {
+    await startConnection()
     console.log(`Servidor Clase 04 activo por puerto ${env.PORT}`);
 })

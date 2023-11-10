@@ -1,14 +1,19 @@
 import { Router } from "express";
-import {ctrlGetAllUsers, ctrlLogin ,ctrlRegister} from "../controllers/user.controller.js"
+import {ctrlDeleteUserById, ctrlGetAllUsers, ctrlGetUserById, ctrlLogin ,ctrlRegister} from "../controllers/user.controller.js"
+
 
 
 const userRouter = Router()
 
-userRouter.get("/" , ctrlGetAllUsers)
+userRouter.get("/" , ctrlGetAllUsers) //Listo
 
-userRouter.post("/register" , ctrlRegister)
+userRouter.get("/:userId" , ctrlGetUserById) //Listo
 
-userRouter.post("/login", ctrlLogin)
+userRouter.post("/register" , ctrlRegister) //Listo
+
+userRouter.post("/login", ctrlLogin) //Listo
+
+userRouter.delete("/:userId", ctrlDeleteUserById) //Listo
 
 
 

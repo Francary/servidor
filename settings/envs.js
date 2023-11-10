@@ -9,6 +9,8 @@ const env = {
 
     PORT: process.env.PORT || puerto,
     MAIL_PASSWORD: process.env.MAIL_PASSWORD,
+    MONGO_URI: process.env.MONGO_URI,
+    JWT_SECRET: process.env.JWT_SECRET,
 };
 
 
